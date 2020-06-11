@@ -5,19 +5,20 @@ const App = () => {
   const [timeoutId,setTimeoutId] = useState(null);
   const [intervalId,setIntervalId] = useState(null);
 
-  const numberChanger = useCallback(value => {
-    setNumber(prev => prev+parseInt(value));
+  const numberChanger = useCallback(intValue => {
+    setNumber(prev => prev+intValue);
   },[]);
 
-  const holdingFunc = useCallback(value => {
-    const intervalId = setInterval(() => numberChanger(value),100);
+  const holdingFunc = useCallback(intValue => {
+    const intervalId = setInterval(() => numberChanger(intValue),100);
     setIntervalId(intervalId);
   },[])
 
   const mouseDown = useCallback(e => {
     const {target:{dataset:{value}}} = e;
-    setNumber(prev => prev + parseInt(value));
-    const timeoutId = setTimeout(() => holdingFunc(value),2000);
+    const intValue = parseInt(value);
+    setNumber(prev => prev + intValue);
+    const timeoutId = setTimeout(() => holdingFunc(intValue),2000);
     setTimeoutId(timeoutId);
   },[]);
 
