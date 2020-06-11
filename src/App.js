@@ -1,25 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,{ useState, useCallback } from 'react';
 
-function App() {
+const App = () => {
+  const [number,setNumber] = useState(0);
+  const [timeoutId,setTimeoutId] = useState(null);
+  const [intervalId,setIntervalId] = useState(null);
+
+  const numberChanger = useCallback(target => {
+    setNumber(prev => prev+parseInt(target.dataset.value));
+  },[]);
+
+  const holdingFunc = useCallback(target => {
+    const intervalId = setInterval(() => numberChanger(target),100);
+    setIntervalId(intervalId);
+  },[])
+
+  const mouseDown = useCallback(e => {
+    const target = e.target;
+    setNumber(prev => prev + parseInt(target.dataset.value));
+    const timeoutId = setTimeout(() => holdingFunc(target),2000);
+    setTimeoutId(timeoutId);
+  },[]);
+
+  const clearFunc = useCallback(() => {
+    clearTimeout(timeoutId);
+    clearInterval(intervalId);
+  },[timeoutId,intervalId]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <span>{number}</span>
+      <div>
+        <button 
+          data-value="1" 
+          onMouseDown={mouseDown} 
+          onMouseLeave={clearFunc} 
+          onMouseUp={clearFunc}
+        >+</button>
+        <button 
+          data-value="-1" 
+          onMouseDown={mouseDown} 
+          onMouseLeave={clearFunc} 
+          onMouseUp={clearFunc}
+        >-</button>
+      </div>
+    </>
   );
 }
 
