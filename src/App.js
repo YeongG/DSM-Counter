@@ -11,21 +11,35 @@ const App = () => {
 
   const holdingFunc = useCallback(intValue => {
     const intervalId = setInterval(() => numberChanger(intValue),100);
+
     setIntervalId(intervalId);
-  },[])
+  },[]);
 
   const mouseDown = useCallback(e => {
     const {target:{dataset:{value}}} = e;
     const intValue = parseInt(value);
-    setNumber(prev => prev + intValue);
     const timeoutId = setTimeout(() => holdingFunc(intValue),2000);
+
+    setNumber(prev => prev + intValue);
     setTimeoutId(timeoutId);
   },[]);
+
+  // const clearFunc = useCallback(() => {
+  //   setTimeoutId(prev => {
+  //     clearTimeout(prev);
+  //     return null;
+  //   });
+  //   setIntervalId(prev => {
+  //     clearInterval(prev);
+  //     return null;
+  //   });
+  // },[]);
 
   const clearFunc = useCallback(() => {
     clearTimeout(timeoutId);
     clearInterval(intervalId);
   },[timeoutId,intervalId]);
+
 
   return (
     <>
@@ -34,15 +48,19 @@ const App = () => {
         <button 
           data-value="1" 
           onMouseDown={mouseDown} 
-          onMouseLeave={clearFunc} 
           onMouseUp={clearFunc}
-        >+</button>
+          onMouseLeave={clearFunc} 
+        >
+          +
+        </button>
         <button 
           data-value="-1" 
           onMouseDown={mouseDown} 
-          onMouseLeave={clearFunc} 
           onMouseUp={clearFunc}
-        >-</button>
+          onMouseLeave={clearFunc} 
+        >
+          -
+        </button>
       </div>
     </>
   );
